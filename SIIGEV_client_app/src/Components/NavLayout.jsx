@@ -1,5 +1,3 @@
-import {useState} from "react";
-
 function NavLayout({children}) {
 
     return (
@@ -7,11 +5,9 @@ function NavLayout({children}) {
             {/* Topbar fijo */}
             <TopBar/>
 
-            <div className="d-flex flex-grow-1">
+            <div className="d-flex flex-row">
                 <SideBar/>
-                <div className="flex-grow-1 p-3 overflow-auto">
-                    {children}
-                </div>
+                {children}
             </div>
         </div>
     );
@@ -19,7 +15,7 @@ function NavLayout({children}) {
 
 function TopBar() {
     return (
-        <div className="p-2 border-bottom bg-light d-flex align-items-center shadow-sm">
+        <div className="p-3 border-bottom bg-light d-flex align-items-center shadow-sm">
             <a className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center ms-2"
                href="/">
                 <img src="/upvlogo.png" width="35" height="30" alt="SII"/>
@@ -31,7 +27,7 @@ function TopBar() {
 
 function SideBar() {
     return (
-        <div className="bg-light border-end d-flex flex-column" style={{width: "180px"}}>
+        <div className="bg-light border-end d-flex flex-column" style={{width: "220px"}}>
             <ul className="list-unstyled">
                 <li className="p-3 border-bottom">
                     <a href="#" className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center">

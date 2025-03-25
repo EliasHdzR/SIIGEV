@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, useRoutes} from "react-router-dom";
-import Home from "./Pages/Home/Home.jsx";
+import Home from "./Pages/Home.jsx";
 
 const AppRoutes = () => {
     return useRoutes([
