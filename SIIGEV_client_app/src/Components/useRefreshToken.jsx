@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const useRefreshToken = () => {
     const navigate = useNavigate();
-    const [token, setToken] = useState(localStorage.getItem("accessToken"));
+    const [access_token, setAccessToken] = useState(localStorage.getItem("accessToken"));
 
     const refreshTokenFn = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
@@ -25,8 +25,9 @@ const useRefreshToken = () => {
             const resData = await response.json();
 
             if (response.status === 200) {
-                localStorage.setItem("accessToken", resData["access_token"]);
-                setToken(resData["access_token"]);
+                localStorage.setItem("accessToken", resData.access_token);
+                setAccessToken(resData.access_token);
+                return resData.access_token;
             } else {
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
@@ -40,7 +41,7 @@ const useRefreshToken = () => {
         }
     };
 
-    return { token, refreshTokenFn };
+    return { access_token, refreshTokenFn };
 };
 
 export default useRefreshToken;
