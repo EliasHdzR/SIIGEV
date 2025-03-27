@@ -81,7 +81,7 @@ class AuthController extends Controller
 
     public function refreshToken(Request $request): JsonResponse
     {
-        $refreshToken = $request->refresh_token;
+        $refreshToken = $request["refresh_token"];
         if(!$refreshToken) return response()->json(["message" => "Debe proporcionar el refresh token"], 400);
 
         $accessToken = $this->refreshAccessToken($refreshToken);
@@ -103,7 +103,9 @@ class AuthController extends Controller
             return null;
         }
 
-        return $this->createAccessToken($refreshTokenData->usuario_id);
+        $usuario_id = $refreshTokenData->alumno_matricula ?? $refreshTokenData->maestro_id;
+
+        return $this->createAccessToken($usuario_id);
     }
 
     public function logout(Request $request): JsonResponse

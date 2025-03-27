@@ -6,22 +6,27 @@ use App\Models\Alumno;
 use App\Models\Maestro;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Illuminate\Support\Facades\DB;
+use Firebase\JWT\ExpiredException;
 use Illuminate\Http\JsonResponse;
 
 class UserDataController extends Controller
 {
     public static function getUserDataFromAccessToken($token): JsonResponse
     {
-        if(!$token) return response()->json(["message" => "No se proporcionó el token"], 400);
+        if(!$token) return response()->json(["message" => "No se proporcionó el token"], 403);
 
         try {
             $secretKey = env('ACCESS_TOKEN_SECRET');
             $tokenData = JWT::decode($token, new Key($secretKey, 'HS256'));
+
             $userData = self::getUserByUserId($tokenData->userId);
+            if (!$userData) return response()->json(["message" => "Usuario no encontrado"], 404);
+
             return response()->json($userData);
+        } catch (ExpiredException) {
+            return response()->json(["message" => "El token ha expirado"], 401);
         } catch (\Exception $e) {
-            return response()->json(["message" => $e->getMessage()], 401);
+            return response()->json(["message" => $e->getMessage()], 400);
         }
     }
 
@@ -33,11 +38,17 @@ class UserDataController extends Controller
                 "id" => $alumno->matricula,
                 "nombre" => $alumno->nombre,
                 "email" => $alumno->email,
+                "rol" => "alumno",
             ];
         }
 
         $maestro = Maestro::where('id', '=', $userId)->first();
-        if ($maestro) return $maestro->toArray();
+        if ($maestro) return [
+            "id" => $maestro->id,
+            "nombre" => $maestro->nombre,
+            "email" => $maestro->email,
+            "rol" => "maestro",
+        ];
 
         return null;
     }

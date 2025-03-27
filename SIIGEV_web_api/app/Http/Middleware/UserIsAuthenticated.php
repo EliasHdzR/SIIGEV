@@ -20,11 +20,11 @@ class UserIsAuthenticated
         }
 
         $token = explode(" ", $authorization)[1];
-        $userData = UserDataController::getUserDataFromAccessToken($token);
+        $userResponse = UserDataController::getUserDataFromAccessToken($token);
+        if($userResponse->status() != 200) return response()->json($userResponse->getData(), $userResponse->getStatusCode());
 
-        if($userData->status() != 200) return $userData;
-
-        $request->merge(["userData" => $userData->getContent()]);
+        $userData = json_decode($userResponse->getContent(), true);
+        $request->merge(["userData" => $userData]);
         return $next($request);
     }
 }

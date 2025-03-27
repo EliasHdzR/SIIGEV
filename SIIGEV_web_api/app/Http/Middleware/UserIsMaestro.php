@@ -13,9 +13,12 @@ class UserIsMaestro
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->userData["rol"] != "maestro") {
+        $userData = $request->userData;
+
+        if (!$userData || !isset($userData["rol"]) || $userData["rol"] != "maestro") {
             return response()->json(["message" => "No autorizado"], 403);
         }
+
         return $next($request);
     }
 }
