@@ -11,24 +11,20 @@ function Login() {
     const [warningPassword, setWarningPassword] = useState("");
 
     function validarCampos() {
-        let valido = true
+        const warnings = {
+            email: "Ingrese su correo electrónico",
+            password: "Ingrese un password"
+        };
 
-        if (email.trim() === "") {
-            setWarningEmail("Ingrese su correo electrónico")
-            setEmail("")
-            valido = false
-        } else {
-            setWarningEmail("")
-        }
+        const newWarnings = {};
 
-        if (password.length === 0) {
-            setWarningPassword("Ingrese un password")
-            valido = false
-        } else {
-            setWarningPassword("")
-        }
+        if (email.trim() === "") newWarnings.email = warnings.email;
+        if (password.length === 0) newWarnings.password = warnings.password;
 
-        if (!valido) return
+        setWarningEmail(newWarnings.email || "");
+        setWarningPassword(newWarnings.password || "");
+
+        if (Object.keys(newWarnings).length > 0) return;
 
         login().then(({status, resData}) => {
             if (status == 400) setWarningPassword("Faltan datos obligatorios")

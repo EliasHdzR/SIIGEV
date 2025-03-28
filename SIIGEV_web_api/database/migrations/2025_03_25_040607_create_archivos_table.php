@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('archivos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('publicacion_id');
-            $table->enum('publicacion_tipo', ['aviso', 'material', 'tarea', 'entrega']);
-            $table->string('nombre');
-            $table->string('ruta');
+            $table->enum('publicacion_tipo', ['avisos', 'materiales', 'tareas', 'entregas']);
+            $table->string('nombre_original');
+            $table->string('nombre_storage');
+            $table->string('extension',10);
             $table->timestamps();
         });
     }

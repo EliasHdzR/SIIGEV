@@ -31,12 +31,14 @@ const useRefreshToken = () => {
             } else {
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
+                localStorage.removeItem("userRol");
                 navigate("/login");
             }
         } catch (error) {
             console.error("Error en useRefreshToken:", error);
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
+            localStorage.removeItem("userRol");
             navigate("/login");
         }
     };
