@@ -1,33 +1,24 @@
-function ClassCard({ claseNombre, claseMaestro, claseCuatri,claseDescripcion, tareas}) {
+import {Link, useNavigate} from "react-router-dom";
+
+function ClassCard({ claseId, claseNombre, claseMaestro, claseCuatri,claseDescripcion, tareas}) {
+    const navigate = useNavigate();
 
     return (
-        <div className="border rounded bg-white d-flex-col align-items-start shadow-sm" style={{width: "300px", height: "300px"}}>
+        <div onClick={() => navigate(`/m/clase/${claseId}`)}
+             className=" border rounded bg-white d-flex-col align-items-start shadow-sm" style={{width: "300px", height: "300px"}}>
             <div className="p-3 rounded-top border-bottom" style={{ backgroundColor: "#ab379c" }}>
-                <h4
-                    className="mb-0 text-truncate"
-                    style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                    }}
-                >
+                <Link to={`/m/clase/${claseId}`}
+                      className="link-dark link-underline-opacity-0 link-underline-opacity-100-hover h5 d-flex align-items-center text-truncate">
                     { claseNombre }
-                </h4>
-                <p
-                    className="text-truncate"
-                    style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                    }}
-                >
+                </Link>
+                <p className="text-truncate">
                     Cuatrimestre { claseCuatri } - { claseDescripcion }
                 </p>
                 <p className="mb-0">{ claseMaestro }</p>
             </div>
 
             <div className="px-3 pt-2">
-                <ul className="list-unstyled">
+                <ul className="list-unstyled text-truncate">
                     {tareas.map((tarea, index) => (
                         <li key={index} className="">{tarea}</li>
                     ))}

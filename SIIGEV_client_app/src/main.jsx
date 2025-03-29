@@ -9,6 +9,8 @@ import App from './App.jsx'
 import Login from "./Pages/Login.jsx";
 import AlumnosHome from "./Pages/Alumnos/AlumnosHome.jsx";
 import MaestrosHome from "./Pages/Maestro/MaestrosHome.jsx";
+import TablonClase from "./Pages/Maestro/Clase/TablonClase.jsx";
+import AlumnosClase from "./Pages/Maestro/Clase/AlumnosClase.jsx";
 import CrearClase from "./Pages/Maestro/CrearClase.jsx";
 import Page404 from "./Pages/Page404.jsx";
 
@@ -17,9 +19,11 @@ const AppRoutes = () => {
         { path: "/", element: <App />},
         { path: "/login", element: <Login /> },
         { path: "/404", element: <Page404 /> },
-        { path: "/alumno/home", element: <ProtectedRoute allowedRole={["alumno"]} element={<AlumnosHome />} />},
-        { path: "/maestro/home", element: <ProtectedRoute allowedRole={["maestro"]} element={<MaestrosHome />} />},
-        { path: "/maestro/clase/crear", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearClase/>} />},
+        { path: "/a/home", element: <ProtectedRoute allowedRole={["alumno"]} element={<AlumnosHome />} />},
+        { path: "/m/home", element: <ProtectedRoute allowedRole={["maestro"]} element={<MaestrosHome />} />},
+        { path: "/m/clase/crear", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearClase/>} />},
+        { path: "/m/clase/:id", element: <ProtectedRoute allowedRole={["maestro"]} element={<TablonClase />} /> },
+        { path: "m/clase/:id/a", element: <ProtectedRoute allowedRole={["maestro"]} element={<AlumnosClase />} /> },
     ]);
 };
 

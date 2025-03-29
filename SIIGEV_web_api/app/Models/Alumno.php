@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Alumno extends Model
 {
     protected $table = 'alumnos';
+    protected $primaryKey = 'matricula';
+
     protected $fillable = [
         'matricula',
         'nombre',
         'email',
         'password',
     ];
-
 
     protected $hidden = [
         'password',

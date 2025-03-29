@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('alumno_matricula')->references('matricula')->on('alumnos');
             $table->foreignId('clase_id')->references('id')->on('clases');
             $table->timestamps();
+            $table->unique(['alumno_matricula', 'clase_id'], 'alumno_clase_unique');
         });
     }
 

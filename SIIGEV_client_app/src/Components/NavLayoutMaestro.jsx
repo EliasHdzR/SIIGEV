@@ -12,7 +12,7 @@ function NavLayoutMaestro({children}) {
                 <div>
                     <SideBar/>
                 </div>
-                <div className="container-fluid overflow-y-scroll">
+                <div className="container-fluid overflow-y-scroll p-0">
                     {children}
                 </div>
             </div>
@@ -36,7 +36,7 @@ function TopBar() {
     return (
         <div className="p-3 border-bottom bg-light d-flex align-items-center shadow-sm justify-content-between">
             <Link className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center ms-2"
-               to="/maestro/home">
+               to="/m/home">
                 <img src="/upvlogo.png" width="35" height="30" alt="SIIGEV"/>
                 <div className="ms-2">SIIGEV</div>
             </Link>
@@ -65,7 +65,7 @@ function SideBar() {
         <div className="bg-light border-end d-flex flex-column h-100" style={{width: "300px"}}>
             <ul className="list-unstyled">
                 <li className="p-3 border-bottom">
-                    <Link to="/maestro/home" className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover">
+                    <Link to="/m/home" className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover">
                         <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368" className={"me-3"}>
                             <path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/>
                         </svg>
@@ -75,7 +75,7 @@ function SideBar() {
 
                 {/* CLASES  */}
                 <li className="px-3 pt-3">
-                    <Link to="/maestro/clase/crear" className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover">
+                    <Link to="/m/clase/crear" className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover">
                         <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368" className={"me-3"}>
                             <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                         </svg>
@@ -94,7 +94,7 @@ function SideBar() {
 
                 {clases.length > 0 ? (
                     clases.map((clase) => (
-                        <ClassItem key={clase.id} claseNombre={clase.nombre} href={`/maestro/clase/${clase.id}`} />
+                        <ClassItem key={clase.id} claseNombre={clase.nombre} href={`/m/clase/${clase.id}`} />
                     ))
                 ) : (
                     <li className="p-3 text-muted">No tienes clases</li>
@@ -104,7 +104,7 @@ function SideBar() {
                 {/* FIN CLASES  */}
 
                 <li className="p-3">
-                    <Link to="#"
+                    <Link to="/login"
                        className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#5f6368" className="me-3">
                             <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
@@ -120,13 +120,8 @@ function SideBar() {
 function ClassItem({claseNombre, href}) {
     return (
         <li className="pt-1 px-3">
-            <Link to={href} className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center text-truncate"
-                  style={{
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis"
-                  }}
-            >
+            <Link to={href}
+                  className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center text-truncate">
                 <span>{claseNombre}</span>
             </Link>
         </li>

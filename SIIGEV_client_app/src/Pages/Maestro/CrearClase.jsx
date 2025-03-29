@@ -51,7 +51,7 @@ function CrearClase() {
                 return;
             }
 
-            navigate("/maestro/home"); // Redirige correctamente
+            navigate("/m/home");
         });
     }
 
@@ -77,8 +77,9 @@ function CrearClase() {
     };
 
     const getCarreras = async () => {
-        const data = await fetchWithAuth("http://127.0.0.1:8000/api/carreras/", { method: "GET" });
-        if(data) setListaCarreras(data);
+        const resData = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/carreras/", { method: "GET" });
+        if(resData.status !== 200) return { status: resData.status, message: resData.message || "Error al recuperar carreras" };
+        setListaCarreras(resData);
     }
 
     useEffect(() => {

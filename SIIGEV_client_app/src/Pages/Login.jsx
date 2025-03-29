@@ -35,11 +35,11 @@ function Login() {
                 localStorage.setItem("userRol", resData["rol"])
 
                 if (resData["rol"] === "alumno") {
-                    navigate("/alumno/home")
+                    navigate("/a/home")
                 }
 
                 if (resData["rol"] === "maestro") {
-                    navigate("/maestro/home")
+                    navigate("/m/home")
                 }
             }
         })

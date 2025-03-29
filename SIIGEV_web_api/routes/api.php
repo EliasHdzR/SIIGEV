@@ -16,15 +16,15 @@ Route::get('/account/info', function (Request $request) {
     return response()->json($userData);
 })->middleware(UserIsAuthenticated::class);
 
-Route::get('/carreras', [MaestroClaseController::class, 'getCarreras'])
-    ->middleware([UserIsAuthenticated::class]);
-
 // RUTAS DEL MAESTRO
 Route::prefix('/maestro')->middleware([UserIsAuthenticated::class, UserIsMaestro::class])->group(function () {
+    Route::get('/carreras', [MaestroClaseController::class, 'getCarreras']);
 
     Route::prefix('/clases')->group(function () {
         Route::get('/', [MaestroClaseController::class, 'getClases']);
         Route::post('/', [MaestroClaseController::class, 'store']);
+        Route::post('/add-alumnos', [MaestroClaseController::class, 'addAlumnos']);
+        Route::get('/{clase_id}/get-alumnos', [MaestroClaseController::class, 'getAlumnosEnClase']);
     });
 });
 
