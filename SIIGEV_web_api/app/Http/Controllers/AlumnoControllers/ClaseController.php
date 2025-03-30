@@ -62,7 +62,7 @@ class ClaseController extends Controller
             return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
         }
 
-        $avisos = $clase->avisos()->get();
+        $avisos = $clase->avisos()->orderBy('created_at', 'desc')->get();
         
         return response()->json($avisos);
     }
