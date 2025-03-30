@@ -45,8 +45,8 @@ function CrearClase() {
 
         if (Object.keys(newWarnings).length > 0) return;
 
-        crearClase().then((resData) => {
-            if (!resData || resData.status === 500) {
+        crearClase().then(({status, resData}) => {
+            if (status !== 201) {
                 setWarningNombre(resData?.message || "Error en el servidor");
                 return;
             }
@@ -56,8 +56,7 @@ function CrearClase() {
     }
 
     const crearClase = async () => {
-        try {
-            const resData = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/clases/", {
+            const res = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/clases/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -69,21 +68,25 @@ function CrearClase() {
                 }),
             });
 
-            if (resData.status === 500) return { status: resData.status, message: resData.message || "Error al crear la clase" };
-            return resData;
-        } catch (error) {
-            return { status: 500, message: error.message };
-        }
+            const data = await res.json();
+            return { status: res.status, data };
     };
 
     const getCarreras = async () => {
-        const resData = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/carreras/", { method: "GET" });
-        if(resData.status !== 200) return { status: resData.status, message: resData.message || "Error al recuperar carreras" };
-        setListaCarreras(resData);
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/carreras/", { method: "GET" });
+        const data = await res.json();
+        return { status: res.status, data };
+
     }
 
     useEffect(() => {
-        getCarreras();
+        getCarreras().then(({status, data}) => {
+            if (status !== 200) {
+                console.error("Error al recuperar carreras", data);
+                return;
+            }
+            setListaCarreras(data);
+        });
     }, []);
 
     return (

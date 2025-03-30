@@ -20,7 +20,7 @@ const useFetchWithAuth = () => {
 
             const response = await fetch(url, { ...options, headers });
 
-            if (response.status === 400 || response.status === 403) {
+            if (response.status === 400 || response.status === 403 || response.status === 404) {
                 navigate("/login");
                 return null;
             }
@@ -36,7 +36,7 @@ const useFetchWithAuth = () => {
                 return fetchWithAuth(url, options);
             }
 
-            return await response.json();
+            return await response;
         } catch (error) {
             console.error("Error en fetchWithAuth:", error);
             navigate("/login");

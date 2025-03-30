@@ -8,12 +8,20 @@ export default function MaestrosHome() {
     const [clases, setClases] = useState([]);
 
     const getClases = async () => {
-        const resDdata = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/clases/", {method: "GET"});
-        if (resDdata) setClases(resDdata);
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/clases/", {method: "GET"});
+        const data = await res.json();
+        return {status: res.status, data}
     }
 
     useEffect(() => {
-        getClases();
+        getClases().then(({status, data}) => {
+            if (status !== 200) {
+                setClases([]);
+                console.error("Error al recuperar clases", data);
+                return;
+            }
+            setClases(data);
+        })
     }, []);
 
     return (
