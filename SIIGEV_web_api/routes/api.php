@@ -29,7 +29,7 @@ Route::prefix('/maestro')->middleware([UserIsAuthenticated::class, UserIsMaestro
         Route::get('/{clase_id}', [MaestroClaseController::class, 'getInfoClase']);
         Route::get('/{clase_id}/get-alumnos', [MaestroClaseController::class, 'getAlumnosRegistrados']);
         Route::get('/{clase_id}/get-alumnos-n', [MaestroClaseController::class, 'getAlumnosNoRegistrados']);
-
+        Route::get('/{clase_id}/avisos', [MaestroClaseController::class, 'getAvisos']);
     });
 });
 

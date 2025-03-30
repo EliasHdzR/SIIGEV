@@ -46,7 +46,7 @@ export default function TablonClase() {
     }, [id]);
 
     return (
-        <NavBarClaseAlumno claseId={id} activeTab={"tablon"}>
+        <NavBarClaseAlumno activeTab={"tablon"}>
             <div className="w-75 d-flex flex-column">
                 <div className="pt-5 px-3 pb-3 rounded" style={{ backgroundColor: "#640d64" }}>
                     <h1 className="mt-5 text-light">{ claseNombre }</h1>

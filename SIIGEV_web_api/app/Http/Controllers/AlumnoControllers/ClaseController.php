@@ -44,7 +44,7 @@ class ClaseController extends Controller
             'nombre' => $clase->nombre,
             'descripcion' => $clase->descripcion,
             'cuatrimestre' => $clase->cuatrimestre,
-            'maestro' => $clase->maestro ? $clase->maestro->nombre : null, // Incluye el nombre del maestro si está disponible
+            'maestro' => $clase->maestro
         ]);
     }
 

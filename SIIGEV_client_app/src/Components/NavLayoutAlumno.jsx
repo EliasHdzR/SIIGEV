@@ -25,12 +25,20 @@ function TopBar() {
     const [usuario, setUsuario] = useState({});
 
     const getUserInfo = async () => {
-        const data = await fetchWithAuth("http://127.0.0.1:8000/api/account/info", { method: "GET" });
-        if(data) setUsuario(data);
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/account/info", { method: "GET" });
+        const data = await res.json();
+        return { status: res.status, data };
     }
 
     useEffect(() => {
-        getUserInfo();
+        getUserInfo().then(({status, data}) => {
+            if (status !== 200) {
+                console.error("Error fetching user info:", data);
+                return;
+            }
+
+            setUsuario(data);
+        })
     }, []);
 
     return (
@@ -52,12 +60,20 @@ function SideBar() {
     const [clases, setClases] = useState([]);
 
     const getClases = async () => {
-        const data = await fetchWithAuth("http://127.0.0.1:8000/api/alumno/clases/", { method: "GET" });
-        if(data) setClases(data);
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/alumno/clases/", { method: "GET" });
+        const data = await res.json();
+        return { status: res.status, data };
     }
 
     useEffect(() => {
-        getClases();
+        getClases().then(({status, data}) => {
+            if (status !== 200) {
+                console.error("Error fetching classes:", data);
+                return;
+            }
+
+            setClases(data);
+        });
     }, []);
 
 

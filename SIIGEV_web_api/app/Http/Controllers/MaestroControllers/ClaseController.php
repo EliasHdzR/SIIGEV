@@ -22,11 +22,13 @@ class ClaseController extends Controller
         return response()->json($clases);
     }
 
+
     public function getCarreras(): JsonResponse
     {
         $carreras = Carrera::orderBy("nombre", "asc")->get();
         return response()->json($carreras);
     }
+
 
     public function store(Request $request): JsonResponse
     {
@@ -67,6 +69,7 @@ class ClaseController extends Controller
         }
     }
 
+
     public function getInfoClase(Request $request, int $clase_id): JsonResponse
     {
         $userData = $request->userData;
@@ -80,6 +83,7 @@ class ClaseController extends Controller
 
         return response()->json($clase);
     }
+
 
     public function addAlumno(Request $request): JsonResponse
     {
@@ -117,6 +121,7 @@ class ClaseController extends Controller
         }
     }
 
+
     /**
      * @param Request $request
      * @param int $clase_id el id de la clase
@@ -140,6 +145,7 @@ class ClaseController extends Controller
         return response()->json($alumnos);
     }
 
+
     /**
      * @param Request $request
      * @param int $clase_id el id de la clase
@@ -161,5 +167,18 @@ class ClaseController extends Controller
             $query->where("clase_id", "=", $claseId);
         })->get();
         return response()->json($alumnosNoRegistrados);
+    }
+
+
+    public function getAvisos(Request $request, $clase_id): JsonResponse
+    {
+        $userData = $request->userData;
+        $clase = Clase::find($clase_id);
+
+        if (!$clase) return response()->json(['error' => 'Clase no encontrada'], 500);
+        if ($clase->maestro_id != $userData["id"]) return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
+
+        $avisos = $clase->avisos()->orderBy('created_at', 'desc')->get();
+        return response()->json($avisos);
     }
 }
