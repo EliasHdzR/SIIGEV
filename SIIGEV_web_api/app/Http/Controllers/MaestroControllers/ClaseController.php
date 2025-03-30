@@ -67,6 +67,20 @@ class ClaseController extends Controller
         }
     }
 
+    public function getInfoClase(Request $request, int $clase_id): JsonResponse
+    {
+        $userData = $request->userData;
+
+        // se verifica que la clase existe
+        $clase = Clase::find($clase_id);
+        if (!$clase) return response()->json(["message" => "La clase no existe"], 500);
+
+        // se verifica que el maestro es el dueño de la clase
+        if ($clase->maestro_id != $userData["id"]) return response()->json(["message" => "No autorizado"], 500);
+
+        return response()->json($clase);
+    }
+
     public function addAlumno(Request $request): JsonResponse
     {
         $userData = $request->userData;
