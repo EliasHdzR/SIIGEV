@@ -12,43 +12,47 @@ export default function TablonClase() {
     const [avisos, setAvisos] = useState([]); // Estado para almacenar los avisos
 
     const getClaseInfo = async () => {
-        try {
-            const data = await fetchWithAuth(`http://127.0.0.1:8000/api/alumno/clases/${id}`, { method: "GET" });
-            if (data) {
-                setClaseNombre(data.nombre); // Asume que el backend devuelve un campo "nombre"
-                setProfesorNombre(data.maestro); // Asume que el backend devuelve un campo "maestro" con el nombre del profesor
-            }
-        } catch (error) {
-            console.error("Error al obtener la información de la clase:", error);
-        }
+        const res = await fetchWithAuth(`http://127.0.0.1:8000/api/alumno/clases/${id}`, { method: "GET" });
+        const data = await res.json();
+        return { status: res.status, data };
     };
 
     const getAvisos = async () => {
-        try {
-            const data = await fetchWithAuth(`http://127.0.0.1:8000/api/alumno/clases/${id}/avisos`, { method: "GET" });
-            if (data) {
-                setAvisos(data); // Asume que el backend devuelve un array de avisos
-            }
-        } catch (error) {
-            console.error("Error al obtener los avisos de la clase:", error);
-        }
+        const res = await fetchWithAuth(`http://127.0.0.1:8000/api/alumno/clases/${id}/avisos`, { method: "GET" });
+        const data = await res.json();
+        return { status: res.status, data };
     };
 
     useEffect(() => {
-        getClaseInfo();
-        getAvisos();
+        getClaseInfo().then(({ status, data }) => {
+            if (status !== 200) {
+                setClaseNombre("");
+                setProfesorNombre("");
+                console.error("Error al recuperar información de la clase", data);
+                return;
+            }
+            setClaseNombre(data.nombre);
+            setProfesorNombre(data.maestro);
+        });
+
+        getAvisos().then(({ status, data }) => {
+            if (status !== 200) {
+                setAvisos([]);
+                console.error("Error al recuperar avisos", data);
+                return;
+            }
+            setAvisos(data);
+        })
     }, [id]);
 
     return (
         <NavBarClaseAlumno claseId={id} activeTab={"tablon"}>
-            <div className="w-75 bg-light p-3">
-                <div>
-                    <h1>{claseNombre || "Cargando clase..."}</h1> 
+            <div className="w-75 d-flex flex-column">
+                <div className="pt-5 px-3 pb-3 rounded" style={{ backgroundColor: "#640d64" }}>
+                    <h1 className="mt-5 text-light">{ claseNombre }</h1>
+                    <h6 className="text-light">{ profesorNombre }</h6>
                 </div>
-
-                <div>
-                    <AvisosClase avisos={avisos} profesorNombre={profesorNombre} />
-                </div>
+                <AvisosClase avisos={avisos} profesorNombre={profesorNombre} />
             </div>
         </NavBarClaseAlumno>
     );

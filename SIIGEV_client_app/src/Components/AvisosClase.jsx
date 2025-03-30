@@ -1,11 +1,10 @@
 export default function AvisosClase({ avisos, profesorNombre }) {
     return (
         <div className="mt-4">
-            <h2>Avisos</h2>
             {avisos.length > 0 ? (
                 <ul className="list-group">
                     {avisos.map((aviso, index) => (
-                        <li key={index} className="list-group-item">
+                        <li key={index} className="list-group-item mb-2 border rounded">
                             <small className="text-muted d-block">
                                 Publicado por: {profesorNombre}
                             </small>

@@ -5,12 +5,13 @@ namespace App\Http\Controllers\AlumnoControllers;
 use App\Http\Controllers\Controller;
 use App\Models\Alumno;
 use App\Models\Clase;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ClaseController extends Controller
 {
-    public function getClases(Request $request)
+    public function getClases(Request $request): JsonResponse
     {
         $userData = $request->userData;
         $alumno = Alumno::find($userData["id"]);
@@ -21,7 +22,7 @@ class ClaseController extends Controller
         return response()->json($clases);
     }
     
-    public function getClaseDetalles(Request $request, $clase_id)
+    public function getClaseDetalles(Request $request, $clase_id): JsonResponse
     {
         $userData = $request->userData;
         $alumno = Alumno::find($userData["id"]);
@@ -29,12 +30,12 @@ class ClaseController extends Controller
         // Verificar si la clase existe
         $clase = Clase::find($clase_id);
         if (!$clase) {
-            return response()->json(['error' => 'Clase no encontrada'], 404);
+            return response()->json(['error' => 'Clase no encontrada'], 500);
         }
 
         // Verificar si el alumno tiene acceso a la clase
         if (!$alumno->clases()->where('clase_id', $clase_id)->exists()) {
-            return response()->json(['error' => 'No tienes acceso a esta clase'], 403);
+            return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
         }
 
         // Devolver los detalles de la clase
@@ -47,18 +48,18 @@ class ClaseController extends Controller
         ]);
     }
 
-    public function getAvisos(Request $request, $clase_id)
+    public function getAvisos(Request $request, $clase_id): JsonResponse
     {
         $userData = $request->userData;
         $alumno = Alumno::find($userData["id"]);
         $clase = Clase::find($clase_id);
         
         if (!$clase) {
-            return response()->json(['error' => 'Clase no encontrada'], 404);
+            return response()->json(['error' => 'Clase no encontrada'], 500);
         }
         
         if (!$alumno->clases()->where('clase_id', $clase_id)->exists()) {
-            return response()->json(['error' => 'No tienes acceso a esta clase'], 403);
+            return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
         }
 
         $avisos = $clase->avisos()->get();

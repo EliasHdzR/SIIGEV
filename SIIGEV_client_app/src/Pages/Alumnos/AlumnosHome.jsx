@@ -8,13 +8,20 @@ export default function AlumnosHome() {
     const [clases, setClases] = useState([]);
 
     const getClases = async () => {
-        const resData = await fetchWithAuth("http://127.0.0.1:8000/api/alumno/clases/", { method: "GET" });
-        console.log(resData);
-        if (resData) setClases(resData);
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/alumno/clases/", { method: "GET" });
+        const data = await res.json();
+        return { status: res.status, data };
     };
 
     useEffect(() => {
-        getClases();
+        getClases().then(({ status, data }) => {
+            if (status !== 200) {
+                setClases([]);
+                console.error("Error al recuperar clases", data);
+                return;
+            }
+            setClases(data);
+        })
     }, []);
 
     return (
