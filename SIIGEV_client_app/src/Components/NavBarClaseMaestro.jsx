@@ -30,7 +30,7 @@ export default function NavBarClaseMaestro({children, activeTab}) {
     return (
         <NavLayoutMaestro>
             <div className="d-flex flex-column">
-                <div className="container-fluid d-flex flex-row bg-light py-2 border-bottom gap-5">
+                <div className="container-fluid d-flex flex-row bg-light py-2 border-bottom gap-5 z-3 position-fixed shadow-sm">
                         <Link to={`/m/clase/${clase.id}`}
                               className={`link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover ms-5 ${
                                   activeTab === "tablon" ? "fw-bold text-dark" : ""

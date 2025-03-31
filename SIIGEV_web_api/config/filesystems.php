@@ -38,6 +38,13 @@ return [
             'report' => false,
         ],
 
+        'siigev_storage' => [
+            'driver' => 'local',
+            'root' => base_path('../SIIGEV_storage'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

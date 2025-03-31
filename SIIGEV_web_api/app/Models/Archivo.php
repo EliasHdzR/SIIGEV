@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Archivo extends Model
 {
@@ -11,7 +10,8 @@ class Archivo extends Model
     protected $fillable = [
         'publicacion_id',
         'publicacion_tipo',
-        'nombre',
-        'ruta',
+        'nombre_original',
+        'nombre_storage',
+        'extension',
     ];
 }

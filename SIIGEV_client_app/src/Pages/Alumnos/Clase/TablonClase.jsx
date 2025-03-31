@@ -32,7 +32,7 @@ export default function TablonClase() {
                 return;
             }
             setClaseNombre(data.nombre);
-            setProfesorNombre(data.maestro);
+            setProfesorNombre(data.maestro.nombre);
         });
 
         getAvisos().then(({ status, data }) => {

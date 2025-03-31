@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AlumnoControllers;
 
+use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\Controller;
 use App\Models\Alumno;
 use App\Models\Clase;
@@ -54,16 +55,17 @@ class ClaseController extends Controller
         $alumno = Alumno::find($userData["id"]);
         $clase = Clase::find($clase_id);
         
-        if (!$clase) {
-            return response()->json(['error' => 'Clase no encontrada'], 500);
-        }
-        
+        if (!$clase) return response()->json(['error' => 'Clase no encontrada'], 500);
         if (!$alumno->clases()->where('clase_id', $clase_id)->exists()) {
             return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
         }
 
         $avisos = $clase->avisos()->orderBy('created_at', 'desc')->get();
-        
+        foreach ($avisos as $aviso) {
+            $aviso->tipo = "avisos";
+            $aviso->archivos = ArchivosController::get($aviso);
+        }
+
         return response()->json($avisos);
     }
 

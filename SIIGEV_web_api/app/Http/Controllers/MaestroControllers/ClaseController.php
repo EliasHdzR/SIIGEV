@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MaestroControllers;
 
+use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\Controller;
 use App\Models\Alumno;
 use App\Models\Carrera;
@@ -179,6 +180,10 @@ class ClaseController extends Controller
         if ($clase->maestro_id != $userData["id"]) return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
 
         $avisos = $clase->avisos()->orderBy('created_at', 'desc')->get();
+        foreach ($avisos as $aviso) {
+            $aviso->tipo = "avisos";
+            $aviso->archivos = ArchivosController::get($aviso);
+        }
         return response()->json($avisos);
     }
 }

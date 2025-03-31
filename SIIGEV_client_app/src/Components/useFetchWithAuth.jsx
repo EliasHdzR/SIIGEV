@@ -12,8 +12,10 @@ const useFetchWithAuth = () => {
         }
 
         try {
+            const isFormData = options.body instanceof FormData;
+
             const headers = {
-                "Content-Type": "application/json",
+                ...(isFormData ? {} : { "Content-Type": "application/json" }),
                 "Authorization": `Bearer ${access_token}`,
                 ...options.headers,
             };
