@@ -13,11 +13,14 @@ import AlumnosClase from "./Pages/Maestro/Clase/AlumnosClase.jsx";
 import TablonClaseAlumnos from "./Pages/Alumnos/Clase/TablonClase.jsx";
 import CrearClase from "./Pages/Maestro/CrearClase.jsx";
 import ContenidoClase from "./Pages/Maestro/Clase/ContenidoClase.jsx";
+import ContenidoClaseAlumno from "./Pages/Alumnos/Clase/ContenidoClase.jsx";
 import CrearTema from "./Pages/Maestro/Clase/CrearTema.jsx";
 import CrearTarea from "./Pages/Maestro/Clase/CrearTarea.jsx";
 import CrearMaterial from "./Pages/Maestro/Clase/CrearMaterial.jsx";
 import VerMaterialProfesor from "./Pages/Maestro/Clase/VerMaterial.jsx";
+import VerMaterialAlumno from "./Pages/Alumnos/Clase/VerMaterial.jsx";
 import VerTareaProfesor from "./Pages/Maestro/Clase/VerTarea.jsx";
+import VerTareaAlumno from "./Pages/Alumnos/Clase/VerTarea.jsx"; 
 import Page404 from "./Pages/Page404.jsx";
 
 const AppRoutes = () => {
@@ -27,6 +30,9 @@ const AppRoutes = () => {
         { path: "/404", element: <Page404 /> },
         { path: "/a/home", element: <ProtectedRoute allowedRole={["alumno"]} element={<AlumnosHome />} />},
         { path: "/a/clase/:id", element: <ProtectedRoute allowedRole={["alumno"]} element={<TablonClaseAlumnos />} /> },
+        { path: "/a/clase/:id/c", element: <ProtectedRoute allowedRole={["alumno"]} element={<ContenidoClaseAlumno />} /> },
+        { path: "/a/clase/:id/tarea/:t_id", element: <ProtectedRoute allowedRole={["alumno"]} element={<VerTareaAlumno />} /> },
+        { path: "/a/clase/:id/material/:m_id", element: <ProtectedRoute allowedRole={["alumno"]} element={<VerMaterialAlumno />} /> }, 
         { path: "/m/home", element: <ProtectedRoute allowedRole={["maestro"]} element={<MaestrosHome />} />},
         { path: "/m/clase/crear", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearClase/>} />},
         { path: "/m/clase/:id", element: <ProtectedRoute allowedRole={["maestro"]} element={<TablonClase />} /> },

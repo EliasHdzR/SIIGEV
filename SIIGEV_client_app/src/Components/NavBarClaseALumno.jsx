@@ -41,12 +41,12 @@ export default function NavBarClaseAlumno({ children, activeTab }) {
                     </Link>
 
                     <Link
-                        to={`/a/clase/${clase.id}/tareas`}
+                        to={`/a/clase/${clase.id}/c`}
                         className={`link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover ms-5 ${
                             activeTab === "tareas" ? "fw-bold text-dark" : ""
                         }`}
                     >
-                        Tareas
+                        Contenido
                     </Link>
                 </div>
                 <div className="d-flex justify-content-center mt-5">

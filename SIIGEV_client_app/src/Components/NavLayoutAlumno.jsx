@@ -44,7 +44,7 @@ function TopBar() {
     return (
         <div className="p-3 border-bottom bg-light d-flex align-items-center shadow-sm justify-content-between">
             <Link className="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-100-hover d-flex align-items-center ms-2"
-               to="/a/home"> {/* Cambiado a /a/home */}
+               to="/a/home">
                 <img src="/upvlogo.png" width="35" height="30" alt="SIIGEV"/>
                 <div className="ms-2">SIIGEV</div>
             </Link>

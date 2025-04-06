@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaestroControllers\ClaseController as MaestroClaseController;
 use App\Http\Controllers\AlumnoControllers\ClaseController as AlumnoClaseController;
+use App\Http\Controllers\AlumnoControllers\TareaController as AlumnoTareaController;
 use App\Http\Controllers\MaestroControllers\AvisoController as MaestroAvisoController;
 use App\Http\Controllers\MaestroControllers\TemaController as MaestroTemaController;
 use App\Http\Controllers\MaestroControllers\MaterialController as MaestroMaterialController;
@@ -68,6 +69,9 @@ Route::prefix('alumno')->middleware([UserIsAuthenticated::class, UserIsAlumno::c
 
     Route::prefix('/clases/{clase_id}')->group(function () {
         Route::get('/', [AlumnoClaseController::class, 'getClaseDetalles']);
-        Route::get('/avisos', [AlumnoClaseController::class, 'getAvisos']);
+        Route::get('/tablon', [AlumnoClaseController::class, 'getTablon']);
+        Route::get('/contenido', [AlumnoClaseController::class, 'getContenido']);
+        Route::get('/tareas/{tarea_id}', [AlumnoTareaController::class, 'getTarea']);
+        Route::get('/materiales/{material_id}', [AlumnoClaseController::class, 'getMaterial']);
     });
 });
