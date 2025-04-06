@@ -56,20 +56,20 @@ function CrearClase() {
     }
 
     const crearClase = async () => {
-            const res = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/clases/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    nombre,
-                    descripcion,
-                    codigo,
-                    carrera_id,
-                    cuatrimestre,
-                }),
-            });
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/clases/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nombre,
+                descripcion,
+                codigo,
+                carrera_id,
+                cuatrimestre,
+            }),
+        });
 
-            const data = await res.json();
-            return { status: res.status, data };
+        const data = await res.json();
+        return { status: res.status, data };
     };
 
     const getCarreras = async () => {
@@ -150,7 +150,7 @@ function CrearClase() {
                         <span className="form-text text-danger-emphasis">{ warningCuatrimestre }</span>
                     </div>
 
-                    <button className="btn btn-warning" onClick={() => validarCampos()}>Crear Clase</button>
+                    <button className="btn fw-medium text-white" style={{ backgroundColor: "#640d64" }} onClick={() => validarCampos()}>Crear Clase</button>
                 </div>
             </div>
         </NavLayoutMaestro>

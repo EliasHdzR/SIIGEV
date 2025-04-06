@@ -31,11 +31,11 @@ const TextEditor = ({content, setContent, files, setFiles}) => {
 
     return (
         <div>
-            <h5>Crear Aviso</h5>
             <Toolbar editor={editor} />
             <div className="border rounded-bottom p-1 z-1">
                 <EditorContent editor={editor} />
             </div>
+            <label className="mt-3">Subir Archivos</label>
             <div className="my-2">
                 <input className="form-control" type="file" id="formFileMultiple" ref={fileInputRef}
                        accept=".png, .jpeg, .jpg, .pdf, .txt"

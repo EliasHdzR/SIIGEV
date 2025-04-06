@@ -1,6 +1,5 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, useRoutes} from "react-router-dom";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
@@ -13,6 +12,12 @@ import TablonClase from "./Pages/Maestro/Clase/TablonClase.jsx";
 import AlumnosClase from "./Pages/Maestro/Clase/AlumnosClase.jsx";
 import TablonClaseAlumnos from "./Pages/Alumnos/Clase/TablonClase.jsx";
 import CrearClase from "./Pages/Maestro/CrearClase.jsx";
+import ContenidoClase from "./Pages/Maestro/Clase/ContenidoClase.jsx";
+import CrearTema from "./Pages/Maestro/Clase/CrearTema.jsx";
+import CrearTarea from "./Pages/Maestro/Clase/CrearTarea.jsx";
+import CrearMaterial from "./Pages/Maestro/Clase/CrearMaterial.jsx";
+import VerMaterialProfesor from "./Pages/Maestro/Clase/VerMaterial.jsx";
+import VerTareaProfesor from "./Pages/Maestro/Clase/VerTarea.jsx";
 import Page404 from "./Pages/Page404.jsx";
 
 const AppRoutes = () => {
@@ -25,7 +30,13 @@ const AppRoutes = () => {
         { path: "/m/home", element: <ProtectedRoute allowedRole={["maestro"]} element={<MaestrosHome />} />},
         { path: "/m/clase/crear", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearClase/>} />},
         { path: "/m/clase/:id", element: <ProtectedRoute allowedRole={["maestro"]} element={<TablonClase />} /> },
-        { path: "m/clase/:id/a", element: <ProtectedRoute allowedRole={["maestro"]} element={<AlumnosClase />} /> },
+        { path: "/m/clase/:id/a", element: <ProtectedRoute allowedRole={["maestro"]} element={<AlumnosClase />} /> },
+        { path: "/m/clase/:id/c", element: <ProtectedRoute allowedRole={["maestro"]} element={<ContenidoClase />} /> },
+        { path: "/m/clase/:id/nuevo-tema", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearTema/>} /> },
+        { path: "/m/clase/:id/nueva-tarea", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearTarea/>} /> },
+        { path: "/m/clase/:id/nuevo-material", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearMaterial/>} /> },
+        { path: "/m/clase/:id/material/:m_id", element: <ProtectedRoute allowedRole={["maestro"]} element={<VerMaterialProfesor />} /> },
+        { path: "/m/clase/:id/tarea/:t_id", element: <ProtectedRoute allowedRole={["maestro"]} element={<VerTareaProfesor />} /> },
     ]);
 };
 

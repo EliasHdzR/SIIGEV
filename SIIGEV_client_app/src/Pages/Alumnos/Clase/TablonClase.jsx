@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import NavBarClaseAlumno from "../../../Components/NavBarClaseALumno.jsx";
 import useFetchWithAuth from "../../../Components/useFetchWithAuth.jsx";
-import AvisosClase from "../../../Components/AvisosClase.jsx"; // Importamos el componente
+
 
 export default function TablonClase() {
     const { id } = useParams();
@@ -52,7 +52,7 @@ export default function TablonClase() {
                     <h1 className="mt-5 text-light">{ claseNombre }</h1>
                     <h6 className="text-light">{ profesorNombre }</h6>
                 </div>
-                <AvisosClase avisos={avisos} profesorNombre={profesorNombre} />
+
             </div>
         </NavBarClaseAlumno>
     );

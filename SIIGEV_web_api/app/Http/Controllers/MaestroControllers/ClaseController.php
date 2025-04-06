@@ -170,8 +170,13 @@ class ClaseController extends Controller
         return response()->json($alumnosNoRegistrados);
     }
 
-
-    public function getAvisos(Request $request, $clase_id): JsonResponse
+    /**
+     * Recupera el contenido de la clase (avisos, tareas y  materiales) en orden descendente
+     * @param Request $request
+     * @param $clase_id
+     * @return JsonResponse
+     */
+    public function getTablon(Request $request, $clase_id): JsonResponse
     {
         $userData = $request->userData;
         $clase = Clase::find($clase_id);
@@ -179,11 +184,38 @@ class ClaseController extends Controller
         if (!$clase) return response()->json(['error' => 'Clase no encontrada'], 500);
         if ($clase->maestro_id != $userData["id"]) return response()->json(['error' => 'No tienes acceso a esta clase'], 500);
 
-        $avisos = $clase->avisos()->orderBy('created_at', 'desc')->get();
+        $avisos = $clase->avisos()->get();
         foreach ($avisos as $aviso) {
             $aviso->tipo = "avisos";
             $aviso->archivos = ArchivosController::get($aviso);
         }
-        return response()->json($avisos);
+
+        $temas = $clase->temas()->get();
+        $materiales = [];
+        $tareas = [];
+
+        foreach ($temas as $tema) {
+            $tema->materiales = $tema->materiales()->get();
+            $tema->tareas = $tema->tareas()->get();
+
+            foreach ($tema->materiales as $material) {
+                $material->tipo = "materiales";
+                $material->archivos = ArchivosController::get($material);
+                $materiales[] = $material;
+            }
+
+            foreach ($tema->tareas as $tarea) {
+                $tarea->tipo = "tareas";
+                $tarea->archivos = ArchivosController::get($tarea);
+                $tareas[] = $tarea;
+            }
+        }
+
+        $contenido = array_merge($avisos->toArray(), $materiales, $tareas);
+        usort($contenido, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+
+        return response()->json($contenido);
     }
 }

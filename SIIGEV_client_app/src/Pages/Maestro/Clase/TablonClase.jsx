@@ -2,15 +2,15 @@ import { useParams } from "react-router-dom";
 import NavBarClaseMaestro from "../../../Components/NavBarClaseMaestro.jsx";
 import {useEffect, useState} from "react";
 import useFetchWithAuth from "../../../Components/useFetchWithAuth.jsx";
-import AvisosClase from "../../../Components/AvisosClase.jsx";
 import TextEditor from "../../../Components/TextEditor.jsx";
+import Publicacion from "../../../Components/Publicacion.jsx";
 
 export default function TablonClase(){
     const { id } = useParams();
     const fetchWithAuth = useFetchWithAuth();
     const [ clase, setClase ] = useState({});
     const [ maestro, setMaestro ] = useState({});
-    const [ avisos, setAvisos ] = useState([]);
+    const [ publicaciones, setPublicaciones ] = useState([]);
     const [ avisoContent, setAvisoContent] = useState("");
     const [ avisoFiles, setAvisoFiles] = useState([]);
 
@@ -26,13 +26,13 @@ export default function TablonClase(){
                  return;
              }
 
-             getAvisos().then(({ status, data }) => {
+             getTablon().then(({ status, data }) => {
                  if (status !== 200) {
-                     setAvisos([]);
+                     setPublicaciones([]);
                      console.error("Error al recuperar avisos", data.message);
                      return;
                  }
-                setAvisos(data);
+                setPublicaciones(data);
              });
 
             setAvisoContent("");
@@ -47,8 +47,6 @@ export default function TablonClase(){
         for (let i = 0; i < avisoFiles.length; i++) {
             body.append("archivos[]", avisoFiles[i]);
         }
-
-        console.log(body)
 
         const res = await fetchWithAuth("http://127.0.0.1:8000/api/maestro/avisos/store", {
             method: "POST",
@@ -71,8 +69,8 @@ export default function TablonClase(){
         return { status: res.status, data };
     };
 
-    const getAvisos = async () => {
-        const res = await fetchWithAuth(`http://127.0.0.1:8000/api/maestro/clases/${id}/avisos`, { method: "GET" });
+    const getTablon = async () => {
+        const res = await fetchWithAuth(`http://127.0.0.1:8000/api/maestro/clases/${id}/tablon`, { method: "GET" });
         const data = await res.json();
         return { status: res.status, data };
     };
@@ -89,13 +87,13 @@ export default function TablonClase(){
             setClase(data);
         });
 
-        getAvisos().then(({ status, data }) => {
+        getTablon().then(({ status, data }) => {
             if (status !== 200) {
-                setAvisos([]);
+                setPublicaciones([]);
                 console.error("Error al recuperar avisos", data);
                 return;
             }
-            setAvisos(data);
+            setPublicaciones(data)
         });
 
         getUserInfo().then(({status, data}) => {
@@ -115,7 +113,9 @@ export default function TablonClase(){
                     <h1 className="mt-5 text-light">{ clase.nombre }</h1>
                     <h6 className="text-light">{ maestro.nombre }</h6>
                 </div>
+
                 <div className="bg-white border rounded shadow-sm p-3 zn-1 mt-3 d-flex flex-column">
+                    <h5>Crear Aviso</h5>
                     <TextEditor content={avisoContent} setContent={setAvisoContent} files={avisoFiles} setFiles={setAvisoFiles}/>
 
                     { avisoFiles.length > 0 && (
@@ -132,7 +132,24 @@ export default function TablonClase(){
                         Publicar
                     </button>
                 </div>
-                <AvisosClase avisos={avisos} profesorNombre={ maestro.nombre } />
+
+                <div className="mt-4">
+                    {publicaciones.length > 0 ? (
+                        <ul className="list-group">
+                            {publicaciones.map((publicacion, index) => (
+                                <Publicacion
+                                    publicacion={publicacion}
+                                    key={index}
+                                    clase_id={id}
+                                    maestroNombre={maestro.nombre}
+                                />
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-muted">No hay publicaciones para esta clase.</p>
+                    )}
+                </div>
+
             </div>
         </NavBarClaseMaestro>
     );

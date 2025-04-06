@@ -12,6 +12,7 @@ class Tema extends Model
     protected $fillable = [
         'clase_id',
         'nombre',
+        'descripcion',
     ];
 
     public function clase(): BelongsTo
