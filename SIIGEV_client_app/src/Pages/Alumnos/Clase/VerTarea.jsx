@@ -96,6 +96,7 @@ export default function VerTareaAlumno() {
                                 tareaId={t_id}
                                 claseId={id}
                                 estatusInicial={tarea.estatus}
+                                fechaEntrega={tarea.fecha_entrega} 
                                 onTareaCompletada={() => console.log("Tarea marcada como completa")}
                             />
                         </div>

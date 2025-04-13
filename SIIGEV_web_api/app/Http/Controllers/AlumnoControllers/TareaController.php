@@ -9,6 +9,7 @@ use App\Models\Clase;
 use App\Models\Tarea;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use exception;
 use Illuminate\Support\Facades\DB;
 
@@ -361,6 +362,43 @@ class TareaController extends Controller
             DB::table('archivos')->where('id', $archivo_id)->delete();
 
             return response()->json(['message' => 'Archivo eliminado exitosamente.'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getTareasPendientes(Request $request, int $clase_id): JsonResponse
+    {
+        $userData = $request->userData;
+        $alumno_id = $userData['id'];
+
+        try {
+            // Obtener la fecha actual
+            $fechaActual = now();
+
+            // Recuperar las tareas pendientes de la clase
+            $tareasPendientes = DB::table('tareas')
+                ->join('temas', 'tareas.tema_id', '=', 'temas.id') // Unir con la tabla temas
+                ->join('clases', 'temas.clase_id', '=', 'clases.id') // Unir con la tabla clases
+                ->where('clases.id', $clase_id) // Filtrar por clase
+                ->where('tareas.fecha_entrega', '>=', $fechaActual) // Filtrar tareas no vencidas
+                ->whereNotExists(function ($query) use ($alumno_id) {
+                    $query->select(DB::raw(1))
+                        ->from('entregas')
+                        ->whereRaw('entregas.tarea_id = tareas.id')
+                        ->where('entregas.alumno_matricula', $alumno_id)
+                        ->where('entregas.entregada', 1); // Excluir tareas ya entregadas
+                })
+                ->select('tareas.id', 'tareas.titulo as nombre', 'tareas.fecha_entrega') // Seleccionar campos específicos
+                ->get();
+
+            // Convertir las fechas al formato ISO 8601
+            $tareasPendientes->transform(function ($tarea) {
+                $tarea->fecha_entrega = Carbon::parse($tarea->fecha_entrega)->toISOString();
+                return $tarea;
+            });
+
+            return response()->json($tareasPendientes, 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }

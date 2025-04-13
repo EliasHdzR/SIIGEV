@@ -72,6 +72,7 @@ Route::prefix('alumno')->middleware([UserIsAuthenticated::class, UserIsAlumno::c
         Route::get('/tablon', [AlumnoClaseController::class, 'getTablon']);
         Route::get('/contenido', [AlumnoClaseController::class, 'getContenido']);
         
+        Route::get('/tareas-pendientes', [AlumnoTareaController::class, 'getTareasPendientes']);
         Route::get('/tareas/{tarea_id}', [AlumnoTareaController::class, 'getTarea']);
         Route::post('/tareas/{tarea_id}/subir-archivos', [AlumnoTareaController::class, 'subirArchivos']);
         Route::post('/tareas/{tarea_id}/completar', [AlumnoTareaController::class, 'marcarComoCompletado']);

@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 
-export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTareaCompletada }) {
+export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaEntrega, onTareaCompletada }) {
     const [archivos, setArchivos] = useState([]);
     const [estatus, setEstatus] = useState(estatusInicial || "No entregada");
     const [entregada, setEntregada] = useState(0); // Estado de la entrega (0 = no entregada, 1 = entregada)
     const [calificacion, setCalificacion] = useState(null); // Calificación de la tarea
 
+    // Verificar si la fecha actual supera la fecha de entrega
+    const isFechaEntregaPasada = fechaEntrega
+        ? new Date() > new Date(fechaEntrega.replace(" ", "T"))
+        : false;
+    
     // Recuperar el estado de la entrega y la calificación
     useEffect(() => {
         const fetchEstadoYCalificacion = async () => {
@@ -219,7 +224,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
                     multiple
                     className="d-none"
                     onChange={handleArchivoSeleccionado}
-                    disabled={entregada === 1} // Deshabilitar si la tarea está entregada
+                    disabled={entregada === 1 || isFechaEntregaPasada} // Deshabilitar si la tarea está entregada
                 />
             </div>
 
@@ -228,7 +233,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
                     className={`btn ${entregada ? "btn-danger" : "btn-success"} px-4`}
                     style={{ whiteSpace: "nowrap" }}
                     onClick={handleToggleEntrega}
-                    disabled={archivos.length === 0 && !entregada}
+                    disabled={archivos.length === 0 && !entregada || isFechaEntregaPasada}
                 >
                     {entregada ? "Anular entrega" : "Entregar"}
                 </button>

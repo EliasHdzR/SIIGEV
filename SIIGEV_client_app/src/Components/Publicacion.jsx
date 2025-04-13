@@ -77,7 +77,14 @@ export default function Publicacion({ publicacion, maestroNombre, clase_id, base
                 </>
             )}
             {publicacion.tipo === "tareas" && (
-                <p className="my-2 fw-medium">El profesor ha publicado una nueva tarea: {publicacion.titulo}</p>
+                <>
+                    <p className="my-2 fw-medium">El profesor ha publicado una nueva tarea: {publicacion.titulo}</p>
+                    {publicacion.fecha_entrega && (
+                        <p className="text-muted">
+                            Fecha de entrega: {new Date(publicacion.fecha_entrega.replace(" ", "T")).toLocaleDateString()}
+                        </p>
+                    )}
+                </>
             )}
             {publicacion.tipo === "materiales" && (
                 <p className="my-2 fw-medium">El profesor ha publicado nuevo material: {publicacion.titulo}</p>
