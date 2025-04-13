@@ -71,7 +71,16 @@ Route::prefix('alumno')->middleware([UserIsAuthenticated::class, UserIsAlumno::c
         Route::get('/', [AlumnoClaseController::class, 'getClaseDetalles']);
         Route::get('/tablon', [AlumnoClaseController::class, 'getTablon']);
         Route::get('/contenido', [AlumnoClaseController::class, 'getContenido']);
+        
         Route::get('/tareas/{tarea_id}', [AlumnoTareaController::class, 'getTarea']);
+        Route::post('/tareas/{tarea_id}/subir-archivos', [AlumnoTareaController::class, 'subirArchivos']);
+        Route::post('/tareas/{tarea_id}/completar', [AlumnoTareaController::class, 'marcarComoCompletado']);
+        Route::post('tareas/{tarea_id}/cancelar', [AlumnoTareaController::class, 'cancelarEntrega']);
+        Route::get('tareas/{tarea_id}/estado', [AlumnoTareaController::class, 'getEstadoEntrega']);
+        Route::get('/tareas/{tarea_id}/entregas', [AlumnoTareaController::class, 'getArchivosEntrega']);
+        Route::delete('/tareas/{tarea_id}/entregas/{entrega_id}', [AlumnoTareaController::class, 'eliminarArchivoEntrega']);
+        Route::get('/tareas/{tarea_id}/calificacion', [AlumnoTareaController::class, 'getCalificacionTarea']);
+   
         Route::get('/materiales/{material_id}', [AlumnoClaseController::class, 'getMaterial']);
     });
 });
