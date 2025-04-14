@@ -80,6 +80,7 @@ class TareaController extends Controller
                 ]);
             }
 
+            $archivosEntrega = [];
             // Procesar y guardar los archivos
             if ($archivos && count($archivos) > 0) {
                 foreach ($archivos as $archivo) {
@@ -95,7 +96,8 @@ class TareaController extends Controller
                     // Guardar el archivo en la tabla 'archivos'
                     $entrega->tipo = "entregas";
                     $archivo->extension = $archivo->getClientOriginalExtension();
-                    ArchivosController::store($archivo, $entrega);
+                    $archivo = ArchivosController::store($archivo, $entrega);
+                    $archivosEntrega[] = $archivo;
                 }
             }
 
@@ -103,6 +105,7 @@ class TareaController extends Controller
             return response()->json([
                 'message' => 'Archivos subidos exitosamente.',
                 'entrega' => DB::table('entregas')->where('id', $entrega->id)->first(),
+                'archivos' => $archivosEntrega,
             ], 201);
         } catch (Exception $e) {
             DB::rollBack();
@@ -141,7 +144,7 @@ class TareaController extends Controller
             return response()->json([
                 'message' => 'Archivos recuperados exitosamente.',
                 'archivos' => $archivos,
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }

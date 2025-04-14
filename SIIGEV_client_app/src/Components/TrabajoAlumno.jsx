@@ -122,7 +122,27 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
             });
 
             if (res.ok) { // Manejar cualquier código de estado exitoso (200-299)
-                console.log("Archivos subidos exitosamente");
+                const fetchArchivosEntrega = async () => {
+                    try {
+                        const res = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/entregas`, {
+                            method: "GET",
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                            },
+                        });
+
+                        if (res.status === 200) {
+                            const data = await res.json();
+                            setArchivos(data.archivos || []);
+                        } else {
+                            console.error("Error al recuperar los archivos de la entrega");
+                        }
+                    } catch (error) {
+                        console.error("Error al recuperar los archivos de la entrega:", error);
+                    }
+                };
+
+                fetchArchivosEntrega();
             } else {
                 console.error(`Error al subir los archivos: ${res.status} ${res.statusText}`);
             }
@@ -183,6 +203,28 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
         }
     };
 
+    function descargarArchivo(archivoId){
+        downloadFile(archivoId);
+    }
+
+    const downloadFile = async (id) => {
+        const url = `http://127.0.0.1:8000/api/download/${id}`;
+        const authHeader = `Bearer ${localStorage.getItem("accessToken")}`;
+
+        const options = {
+            headers: {
+                Authorization: authHeader
+            }
+        };
+
+        fetch(url, options)
+            .then( res => res.blob() )
+            .then( blob => {
+                const file = window.URL.createObjectURL(blob);
+                window.open(file, '_blank');
+            });
+    }
+
     return (
         <div className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -198,7 +240,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
                     {archivos.map((archivo) => (
                         <li key={archivo.id || archivo.name}
                             className="list-group-item d-flex justify-content-between align-items-center">
-                            {archivo.nombre_original || archivo.name}
+                            <span onClick={() => descargarArchivo(archivo.id)} style={{cursor: "pointer"}} >{archivo.nombre_original || archivo.name}</span>
                             {archivo.id && entregada === 0 && ( // Mostrar botón de eliminar solo si no está entregada
                                 <button
                                     className="btn btn-sm btn-danger"

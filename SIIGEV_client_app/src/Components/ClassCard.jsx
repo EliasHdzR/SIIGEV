@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function ClassCard({ claseId, claseNombre, claseMaestro, claseCuatri, claseDescripcion, basePath = "/m" }) {
+function ClassCard({ claseId, claseNombre, claseMaestro, claseCuatri, claseDescripcion, basePath = "/m", tipo = "alumno" }) {
     const navigate = useNavigate();
     const [tareasPendientes, setTareasPendientes] = useState([]);
 
@@ -50,18 +50,25 @@ function ClassCard({ claseId, claseNombre, claseMaestro, claseCuatri, claseDescr
             </div>
 
             <div className="px-3 pt-2">
-                <h6>Tareas pendientes:</h6>
-                <ul className="list-unstyled text-truncate">
-                    {tareasPendientes.length > 0 ? (
-                        tareasPendientes.map((tarea, index) => (
-                            <li key={index} className="">
-                                {tarea.nombre} (Vence: {new Date(tarea.fecha_entrega).toLocaleDateString()})
-                            </li>
-                        ))
-                    ) : (
-                        <li className="text-muted">No tienes tareas pendientes.</li>
-                    )}
-                </ul>
+                { tipo === "alumno" ? (
+                    <>
+                        <h6>Tareas pendientes:</h6>
+                        <ul className="list-unstyled text-truncate">
+                            {tareasPendientes.length > 0 ? (
+                                tareasPendientes.map((tarea, index) => (
+                                    <li key={index} className="">
+                                        {tarea.nombre} (Vence: {new Date(tarea.fecha_entrega).toLocaleDateString()})
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-muted">No tienes tareas pendientes.</li>
+                            )}
+                        </ul>
+                    </>
+                )  : (
+                    <></>
+                )}
+
             </div>
         </div>
     );

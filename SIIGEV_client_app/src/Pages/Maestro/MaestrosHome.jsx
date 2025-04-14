@@ -36,7 +36,7 @@ export default function MaestrosHome() {
                             claseMaestro={clase.maestro.nombre}
                             claseCuatri={clase.cuatrimestre}
                             claseDescripcion={clase.descripcion}
-                            tareas={["hola", "mundo", "tarea 1", "tarea 2"]}
+                            tipo="maestro"
                         />
                     ))
                 ) : (

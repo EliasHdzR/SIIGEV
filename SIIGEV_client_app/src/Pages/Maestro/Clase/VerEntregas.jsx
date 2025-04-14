@@ -69,6 +69,7 @@ function Entrega({entrega}) {
     const fetchWithAuth = useFetchWithAuth();
     const [calificacion, setCalificacion] = useState("");
     const [warning, setWarning] = useState("");
+    const [success, setSuccess] = useState("");
     const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
@@ -123,6 +124,7 @@ function Entrega({entrega}) {
             }
 
             setDisabled(true)
+            setSuccess("Entrega calificada correctamente");
         })
     }
 
@@ -152,6 +154,7 @@ function Entrega({entrega}) {
                 >Calificar</button>
             </div>
             <p className="m-0 text-danger">{ warning }</p>
+            <p className="m-0 text-success">{ success }</p>
 
             <hr/>
             <p className="m-0">Archivos Adjuntos</p>
