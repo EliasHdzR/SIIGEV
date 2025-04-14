@@ -42,7 +42,7 @@ class TemaController extends Controller
 
                 foreach ($tareas as $tarea) {
                     $tarea->tipo = "tareas";
-                    $tarea->archivos = ArchivosController::get($tarea);
+                    $tarea->entregas = $tarea->statsTarea();
                 }
 
                 $publicaciones = array_merge($materiales->toArray(), $tareas->toArray());
