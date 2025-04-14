@@ -29,7 +29,7 @@ export default function NavBarClaseMaestro({children, activeTab}) {
 
     return (
         <NavLayoutMaestro>
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column h-100">
                 <div
                     className="container-fluid d-flex flex-row bg-light py-2 border-bottom gap-5 z-3 position-fixed shadow-sm">
                     <Link to={`/m/clase/${clase.id}`}
@@ -56,7 +56,7 @@ export default function NavBarClaseMaestro({children, activeTab}) {
                         Alumnos
                     </Link>
                 </div>
-                <div className="d-flex justify-content-center mt-5">
+                <div className="d-flex justify-content-center mt-5 h-100">
                     {children}
                 </div>
             </div>

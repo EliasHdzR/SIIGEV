@@ -5,7 +5,9 @@ namespace App\Http\Controllers\AlumnoControllers;
 use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\Controller;
 use App\Models\Alumno;
+use App\Models\Archivo;
 use App\Models\Clase;
+use App\Models\Entrega;
 use App\Models\Tarea;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -61,10 +63,8 @@ class TareaController extends Controller
         DB::beginTransaction();
         try {
             // Verificar si la tarea existe manualmente
-            $tarea = DB::table('tareas')->where('id', $tarea_id)->first();
-            if (!$tarea) {
-                throw new Exception("La tarea no existe.");
-            }
+            $tarea = Tarea::find($tarea_id);
+            if (!$tarea) throw new Exception("La tarea no existe.");
 
             // Registrar la entrega si no existe
             $entrega = DB::table('entregas')->where([
@@ -73,66 +73,36 @@ class TareaController extends Controller
             ])->first();
 
             if (!$entrega) {
-                $entrega_id = DB::table('entregas')->insertGetId([
+                $entrega = Entrega::create([
                     'alumno_matricula' => $alumno_id,
                     'tarea_id' => $tarea_id,
-                    'calificacion' => null,
-                    'entregada' => 0, // Estado inicial
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'entregada' => 0,
                 ]);
-            } else {
-                $entrega_id = $entrega->id;
             }
 
             // Procesar y guardar los archivos
-            $archivoRegistros = [];
             if ($archivos && count($archivos) > 0) {
                 foreach ($archivos as $archivo) {
                     $archivo = (object)$archivo;
 
                     // Validar el archivo
-                    if (!$archivo->isValid()) {
-                        throw new Exception("El archivo no es válido.");
-                    }
-                    if ($archivo->getSize() > 5000000) {
-                        throw new Exception("El archivo excede el tamaño máximo permitido.");
-                    }
+                    if (!$archivo->isValid()) throw new Exception("El archivo no es válido.");
+                    if ($archivo->getSize() > 5000000) throw new Exception("El archivo excede el tamaño máximo permitido.");
                     if (!in_array($archivo->getClientOriginalExtension(), ["jpg", "jpeg", "png", "pdf", "txt"])) {
                         throw new Exception("El tipo de archivo no es válido: " . $archivo->getClientOriginalExtension());
                     }
 
-                    // Verificar si el archivo ya existe
-                    $archivoExistente = DB::table('archivos')->where([
-                        ['publicacion_id', '=', $entrega_id],
-                        ['publicacion_tipo', '=', 'entregas'],
-                        ['nombre_original', '=', $archivo->getClientOriginalName()],
-                    ])->first();
-
-                    if ($archivoExistente) {
-                        continue; // Omitir si el archivo ya existe
-                    }
-
                     // Guardar el archivo en la tabla 'archivos'
-                    $archivo_id = DB::table('archivos')->insertGetId([
-                        'publicacion_id' => $entrega_id,
-                        'publicacion_tipo' => 'entregas',
-                        'nombre_original' => $archivo->getClientOriginalName(),
-                        'nombre_storage' => $archivo->store('entregas'), // Guardar en el almacenamiento
-                        'extension' => $archivo->getClientOriginalExtension(),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-
-                    $archivoRegistros[] = DB::table('archivos')->where('id', $archivo_id)->first();
+                    $entrega->tipo = "entregas";
+                    $archivo->extension = $archivo->getClientOriginalExtension();
+                    ArchivosController::store($archivo, $entrega);
                 }
             }
 
             DB::commit();
             return response()->json([
                 'message' => 'Archivos subidos exitosamente.',
-                'entrega' => DB::table('entregas')->where('id', $entrega_id)->first(),
-                'archivos' => $archivoRegistros,
+                'entrega' => DB::table('entregas')->where('id', $entrega->id)->first(),
             ], 201);
         } catch (Exception $e) {
             DB::rollBack();
@@ -328,9 +298,7 @@ class TareaController extends Controller
         try {
             // Verificar si la tarea existe
             $tarea = DB::table('tareas')->where('id', $tarea_id)->first();
-            if (!$tarea) {
-                return response()->json(['message' => 'La tarea no existe.'], 404);
-            }
+            if (!$tarea) throw new Exception("La tarea no existe.");
 
             // Verificar si la entrega existe para el alumno y la tarea
             $entrega = DB::table('entregas')->where([
@@ -338,9 +306,7 @@ class TareaController extends Controller
                 ['tarea_id', '=', $tarea_id],
             ])->first();
 
-            if (!$entrega) {
-                return response()->json(['message' => 'No se encontró una entrega para esta tarea.'], 404);
-            }
+            if (!$entrega) throw new Exception("La entrega no existe.");
 
             // Verificar si el archivo pertenece a la entrega
             $archivo = DB::table('archivos')->where([
@@ -349,18 +315,14 @@ class TareaController extends Controller
                 ['publicacion_tipo', '=', 'entregas'],
             ])->first();
 
-            if (!$archivo) {
-                return response()->json(['message' => 'El archivo no pertenece a esta entrega.'], 403);
-            }
+            if (!$archivo) throw new Exception("El archivo no pertenece a la entrega.");
 
             // Eliminar el archivo del almacenamiento
-            if (\Storage::exists($archivo->nombre_storage)) {
-                \Storage::delete($archivo->nombre_storage);
-            }
+            $response = ArchivosController::destroy($archivo->nombre_storage);
+            if ($response->getStatusCode() !== 200) throw new Exception("Error al eliminar el archivo: " . $response->getContent());
 
             // Eliminar el archivo de la base de datos
             DB::table('archivos')->where('id', $archivo_id)->delete();
-
             return response()->json(['message' => 'Archivo eliminado exitosamente.'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);

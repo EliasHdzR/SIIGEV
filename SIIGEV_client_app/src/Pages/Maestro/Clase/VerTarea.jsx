@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import NavBarClaseMaestro from "../../../Components/NavBarClaseMaestro.jsx";
 import useFetchWithAuth from "../../../Components/useFetchWithAuth.jsx";
 import {useEffect, useState} from "react";
@@ -8,16 +8,17 @@ export default function VerTareaProfesor(){
     const { id , t_id} = useParams();
     const [ tarea, setTarea ] = useState({});
     const [ createdAt, setCreatedAt ] = useState("");
+    const [ entregas, setEntregas ] = useState([]);
     const [ fechaEntrega, setFechaEntrega ] = useState("");
 
-    const getMaterial = async () => {
-        const rest = await fetchWithAuth(`http://127.0.0.1:8000/api/maestro/tareas/${t_id}/`, { method: "GET" });
-        const resData = await rest.json();
-        return { status: rest.status, resData }
+    const getTarea = async () => {
+        const res = await fetchWithAuth(`http://127.0.0.1:8000/api/maestro/tareas/${t_id}/`, { method: "GET" });
+        const resData = await res.json();
+        return { status: res.status, resData }
     }
 
     useEffect(() => {
-        getMaterial().then(({status, resData}) => {
+        getTarea().then(({status, resData}) => {
             if(status !== 200){
                 console.error(status, resData);
                 return;
@@ -25,6 +26,7 @@ export default function VerTareaProfesor(){
 
             setCreatedAt(resData.tarea.created_at);
             setFechaEntrega(resData.tarea.fecha_entrega);
+            setEntregas(resData.tarea.entregas);
             setTarea(resData.tarea);
         });
     }, [id])
@@ -68,12 +70,16 @@ export default function VerTareaProfesor(){
                 <small className="text-muted d-block ms-5 ps-4 fw-bold">
                     Fecha de entrega: {new Date(fechaEntrega.replace(" ", "T")).toLocaleString()}
                 </small>
+                <small className="text-muted d-block ms-5 ps-4 fw-bold">
+                    Entregas: Calificadas {entregas.cantCalificadas} | Entregadas {entregas.cantEntregadas} |
+                    Asignadas {entregas.cantAsignadas}
+                </small>
 
                 <hr/>
 
                 <p className="my-2" dangerouslySetInnerHTML={{__html: tarea.instrucciones}}></p>
                 {tarea.archivos && (
-                    <div className="d-flex flex-row">
+                    <div className="d-flex flex-row my-4">
                         {tarea.archivos.map((archivo) => (
                             <button key={archivo.id} onClick={() => descargarArchivo(archivo.id)}
                                     className="btn btn-link bg-light rounded p-2 me-2">
@@ -82,6 +88,8 @@ export default function VerTareaProfesor(){
                         ))}
                     </div>
                 )}
+
+                <Link to={`/m/clase/${id}/tarea/${t_id}/e`} className="btn text-white fw-medium" style={{ backgroundColor: "#640d64" }}>Ver Entregas</Link>
             </div>
         </NavBarClaseMaestro>
     );

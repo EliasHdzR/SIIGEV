@@ -3,7 +3,7 @@ import NavBarClaseMaestro from "../../../Components/NavBarClaseMaestro.jsx";
 import {useEffect, useState} from "react";
 import useFetchWithAuth from "../../../Components/useFetchWithAuth.jsx";
 import TextEditor from "../../../Components/TextEditor.jsx";
-import Publicacion from "../../../Components/Publicacion.jsx";
+import PublicacionMaestro from "../../../Components/PublicacionMaestro.jsx";
 
 export default function TablonClase(){
     const { id } = useParams();
@@ -137,7 +137,7 @@ export default function TablonClase(){
                     {publicaciones.length > 0 ? (
                         <ul className="list-group">
                             {publicaciones.map((publicacion, index) => (
-                                <Publicacion
+                                <PublicacionMaestro
                                     publicacion={publicacion}
                                     key={index}
                                     clase_id={id}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 
 export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaEntrega, onTareaCompletada }) {
     const [archivos, setArchivos] = useState([]);
@@ -10,7 +10,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
     const isFechaEntregaPasada = fechaEntrega
         ? new Date() > new Date(fechaEntrega.replace(" ", "T"))
         : false;
-    
+
     // Recuperar el estado de la entrega y la calificación
     useEffect(() => {
         const fetchEstadoYCalificacion = async () => {
@@ -93,26 +93,26 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
     // Subir archivos al servidor
     const handleArchivoSeleccionado = async (e) => {
         const nuevosArchivos = Array.from(e.target.files);
-    
+
         // Filtrar archivos que ya existen en el estado
         const archivosFiltrados = nuevosArchivos.filter(
             (nuevoArchivo) =>
                 !archivos.some((archivoExistente) => archivoExistente.nombre_original === nuevoArchivo.name)
         );
-    
+
         if (archivosFiltrados.length === 0) {
             console.log("Todos los archivos seleccionados ya existen.");
             return;
         }
-    
+
         setArchivos((prevArchivos) => [...prevArchivos, ...archivosFiltrados]);
-    
+
         try {
             const formData = new FormData();
             archivosFiltrados.forEach((archivo) => {
                 formData.append("archivos[]", archivo);
             });
-    
+
             const res = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/subir-archivos`, {
                 method: "POST",
                 headers: {
@@ -120,7 +120,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
                 },
                 body: formData,
             });
-    
+
             if (res.ok) { // Manejar cualquier código de estado exitoso (200-299)
                 console.log("Archivos subidos exitosamente");
             } else {
@@ -187,7 +187,8 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
         <div className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="me-3">Tu trabajo</h5>
-                <span className={`badge ${estatus === "Entregada" || estatus.includes("/100") ? "bg-success" : "bg-secondary"}`}>
+                <span
+                    className={`badge ${estatus === "Entregada" || estatus.includes("/100") ? "bg-success" : "bg-secondary"}`}>
                     {estatus}
                 </span>
             </div>
@@ -195,7 +196,8 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
             {archivos.length > 0 && (
                 <ul className="list-group mb-3">
                     {archivos.map((archivo) => (
-                        <li key={archivo.id || archivo.name} className="list-group-item d-flex justify-content-between align-items-center">
+                        <li key={archivo.id || archivo.name}
+                            className="list-group-item d-flex justify-content-between align-items-center">
                             {archivo.nombre_original || archivo.name}
                             {archivo.id && entregada === 0 && ( // Mostrar botón de eliminar solo si no está entregada
                                 <button
@@ -211,10 +213,8 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, fechaE
             )}
 
             <div className="mb-3 d-flex justify-content-center">
-                <label
-                    htmlFor="archivoInput"
-                    className={`btn px-4 ${entregada === 1 ? "btn-secondary" : "btn-primary"}`}
-                    style={{ whiteSpace: "nowrap", cursor: entregada === 1 ? "not-allowed" : "pointer" }}
+                <label htmlFor="archivoInput" className={`btn px-4 ${entregada === 1 ? "btn-secondary" : "btn-primary"}`}
+                    style={{whiteSpace: "nowrap", cursor: entregada === 1 ? "not-allowed" : "pointer"}}
                 >
                     Añadir archivos
                 </label>

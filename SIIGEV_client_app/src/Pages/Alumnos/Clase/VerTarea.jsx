@@ -53,10 +53,10 @@ export default function VerTareaAlumno() {
 
     return (
         <NavBarClaseAlumno claseId={id} activeTab={"contenido"}>
-            <div className="d-flex justify-content-center mt-3">
+            <div className="d-flex justify-content-center mt-3 container-fluid">
                 <div className="d-flex flex-row justify-content-between w-75">
                     {/* Detalles de la tarea */}
-                    <div className="w-60 d-flex flex-column">
+                    <div className="w-75 d-flex flex-column">
                         <div className="d-flex flex-row align-items-center">
                             <div className="ms-1 me-3 d-flex align-items-center justify-content-center" style={{ backgroundColor: "#640d64", borderRadius: "50%", width: "45px", height: "45px" }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" className="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
@@ -90,7 +90,7 @@ export default function VerTareaAlumno() {
                     </div>
     
                     {/* Trabajo del alumno */}
-                    <div className="w-40 ms-4">
+                    <div className="w-50 ms-4">
                         <div className="border rounded p-3 shadow-sm bg-light">
                             <TrabajoAlumno
                                 tareaId={t_id}

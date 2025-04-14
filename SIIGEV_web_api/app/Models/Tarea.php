@@ -21,6 +21,17 @@ class Tarea extends Model
         return $this->belongsTo(Tema::class);
     }
 
+    public function statsTarea(): array
+    {
+        $cantidadAlumnos = $this->tema->clase->alumnos()->count();
+        $entregasDB = $this->HasMany(Entrega::class);
+        $entregas["cantAsignadas"] = $cantidadAlumnos;
+        $entregas["cantEntregadas"] = $entregasDB->where("entregada", "=", true)->count();
+        $entregas["cantCalificadas"] = $entregasDB->where("calificacion", "!=", null)->count();
+
+        return $entregas;
+    }
+
     public function entregas(): HasMany
     {
         return $this->hasMany(Entrega::class);

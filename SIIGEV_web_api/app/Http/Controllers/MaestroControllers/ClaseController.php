@@ -200,13 +200,12 @@ class ClaseController extends Controller
 
             foreach ($tema->materiales as $material) {
                 $material->tipo = "materiales";
-                $material->archivos = ArchivosController::get($material);
                 $materiales[] = $material;
             }
 
             foreach ($tema->tareas as $tarea) {
                 $tarea->tipo = "tareas";
-                $tarea->archivos = ArchivosController::get($tarea);
+                $tarea->entregas = $tarea->statsTarea();
                 $tareas[] = $tarea;
             }
         }

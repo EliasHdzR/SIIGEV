@@ -2,7 +2,7 @@ import NavBarClaseMaestro from "../../../Components/NavBarClaseMaestro.jsx";
 import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import useFetchWithAuth from "../../../Components/useFetchWithAuth.jsx";
-import Publicacion from "../../../Components/Publicacion.jsx";
+import PublicacionMaestro from "../../../Components/PublicacionMaestro.jsx";
 
 export default function ContenidoClase(){
     const fetchWithAuth = useFetchWithAuth();
@@ -72,7 +72,7 @@ export default function ContenidoClase(){
                                     ) : (
                                         <ul className="list-group">
                                             {tema.publicaciones.map((publicacion, index) => (
-                                                <Publicacion
+                                                <PublicacionMaestro
                                                     publicacion={publicacion}
                                                     key={index}
                                                     clase_id={id}

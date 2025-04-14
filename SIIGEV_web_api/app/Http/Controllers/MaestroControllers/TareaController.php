@@ -4,12 +4,14 @@ namespace App\Http\Controllers\MaestroControllers;
 
 use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\Controller;
+use App\Models\Entrega;
 use App\Models\Tarea;
 use App\Models\Tema;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Js;
 
 class TareaController extends Controller
 {
@@ -69,9 +71,59 @@ class TareaController extends Controller
 
             $tarea->tipo = "tareas";
             $tarea->archivos = ArchivosController::get($tarea);
+            $tarea->entregas = $tarea->statsTarea();
 
             return response()->json(["tarea" => $tarea]);
         } catch (\Exception $e){
+            return response()->json(["message" => $e->getMessage()], 500);
+        }
+    }
+
+    public function getEntregas(Request $request, int $tarea_id): JsonResponse
+    {
+        $userData = $request->userData;
+
+        try {
+            $tarea = Tarea::find($tarea_id);
+            if (!$tarea) throw new Exception("La tarea no existe");
+            if($tarea->tema->clase->maestro_id != $userData["id"]) throw new Exception("Acceso no autorizado.");
+
+            $tarea->with("entregas")->get();
+            $entregas = $tarea->entregas()->with("alumno")->get();
+            $entregas = $entregas->where("entregada", "=", true);
+
+            foreach ($entregas as $entrega) {
+                $entrega->tipo = "entregas";
+                $entrega->archivos = ArchivosController::get($entrega);
+            }
+
+            return response()->json(["entregas" => $entregas]);
+        } catch (\Exception $e){
+            return response()->json(["message" => $e->getMessage()], 500);
+        }
+    }
+
+    public function calificarEntrega(Request $request): JsonResponse
+    {
+        $userData = $request->userData;
+        $entrega_id = $request->entrega_id;
+        $calificacion = $request->calificacion;
+
+        DB::beginTransaction();
+        try {
+            $entrega = Entrega::find($entrega_id);
+            if (!$entrega) throw new Exception("La entrega no existe");
+            if($entrega->tarea->tema->clase->maestro_id != $userData["id"]) throw new Exception("Acceso no autorizado.");
+
+            if ($calificacion < 0 || $calificacion > 100) throw new Exception("La calificación debe estar entre 0 y 100");
+
+            $entrega->calificacion = $calificacion;
+            $entrega->save();
+
+            DB::commit();
+            return response()->json(["message" => "Entrega calificada"]);
+        } catch (\Exception $e){
+            DB::rollBack();
             return response()->json(["message" => $e->getMessage()], 500);
         }
     }

@@ -12,7 +12,7 @@ function NavLayoutMaestro({children}) {
                 <div>
                     <SideBar/>
                 </div>
-                <div className="container-fluid overflow-y-scroll p-0">
+                <div className="container-fluid h-100 overflow-y-scroll p-0">
                     {children}
                 </div>
             </div>

@@ -22,6 +22,7 @@ import VerMaterialAlumno from "./Pages/Alumnos/Clase/VerMaterial.jsx";
 import VerTareaProfesor from "./Pages/Maestro/Clase/VerTarea.jsx";
 import VerTareaAlumno from "./Pages/Alumnos/Clase/VerTarea.jsx"; 
 import Page404 from "./Pages/Page404.jsx";
+import VerEntregas from "./Pages/Maestro/Clase/VerEntregas.jsx";
 
 const AppRoutes = () => {
     return useRoutes([
@@ -43,6 +44,7 @@ const AppRoutes = () => {
         { path: "/m/clase/:id/nuevo-material", element: <ProtectedRoute allowedRole={["maestro"]} element={<CrearMaterial/>} /> },
         { path: "/m/clase/:id/material/:m_id", element: <ProtectedRoute allowedRole={["maestro"]} element={<VerMaterialProfesor />} /> },
         { path: "/m/clase/:id/tarea/:t_id", element: <ProtectedRoute allowedRole={["maestro"]} element={<VerTareaProfesor />} /> },
+        { path: "/m/clase/:id/tarea/:t_id/e", element: <ProtectedRoute allowedRole={["maestro"]} element={<VerEntregas />} /> },
     ]);
 };
 

@@ -59,6 +59,8 @@ Route::prefix('/maestro')->middleware([UserIsAuthenticated::class, UserIsMaestro
     Route::prefix('/tareas')->group(function () {
         Route::post('/', [MaestroTareaController::class, 'store']);
         Route::get('/{tarea_id}', [MaestroTareaController::class, 'get']);
+        Route::get('/{tarea_id}/entregas', [MaestroTareaController::class, 'getEntregas']);
+        Route::post('/calificar', [MaestroTareaController::class, 'calificarEntrega']);
     });
 });
 
