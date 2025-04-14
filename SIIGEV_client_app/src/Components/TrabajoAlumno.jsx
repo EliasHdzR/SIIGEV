@@ -1,113 +1,109 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 
-export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTareaCompletada }) {
+export default function TrabajoAlumno({tareaId, claseId, estatusInicial, onTareaCompletada}) {
     const [archivos, setArchivos] = useState([]);
     const [estatus, setEstatus] = useState(estatusInicial || "No entregada");
     const [entregada, setEntregada] = useState(0); // Estado de la entrega (0 = no entregada, 1 = entregada)
     const [calificacion, setCalificacion] = useState(null); // Calificación de la tarea
 
+    const fetchEstadoYCalificacion = async () => {
+        try {
+            let estadoData = null; // Declarar estadoData fuera del bloque if
+
+            // Recuperar el estado de la entrega
+            const estadoRes = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/estado`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+
+            if (estadoRes.status === 200) {
+                estadoData = await estadoRes.json();
+                setEntregada(estadoData.entrega?.entregada || 0); // Actualizar el estado de la entrega
+            } else {
+                console.error("Error al recuperar el estado de la entrega");
+            }
+
+            // Recuperar la calificación
+            const calificacionRes = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/calificacion`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+
+            if (calificacionRes.status === 200) {
+                const calificacionData = await calificacionRes.json();
+                setCalificacion(calificacionData.calificacion); // Actualizar la calificación
+
+                // Actualizar el estatus basado en la calificación y el estado de entrega
+                if (estadoData?.entrega?.entregada === 1) {
+                    setEstatus(
+                        calificacionData.calificacion === null
+                            ? "Entregada"
+                            : `${calificacionData.calificacion}/100`
+                    );
+                } else {
+                    setEstatus("No entregada");
+                }
+            } else {
+                console.error("Error al recuperar la calificación");
+            }
+        } catch (error) {
+            console.error("Error al recuperar el estado o la calificación:", error);
+        }
+    };
+
+    const fetchArchivosEntrega = async () => {
+        try {
+            const res = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/entregas`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+
+            if (res.status === 200) {
+                const data = await res.json();
+                setArchivos(data.archivos || []);
+            } else {
+                console.error("Error al recuperar los archivos de la entrega");
+            }
+        } catch (error) {
+            console.error("Error al recuperar los archivos de la entrega:", error);
+        }
+    };
+
     // Recuperar el estado de la entrega y la calificación
     useEffect(() => {
-        const fetchEstadoYCalificacion = async () => {
-            try {
-                let estadoData = null; // Declarar estadoData fuera del bloque if
-
-                // Recuperar el estado de la entrega
-                const estadoRes = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/estado`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
-
-                if (estadoRes.status === 200) {
-                    estadoData = await estadoRes.json();
-                    setEntregada(estadoData.entrega?.entregada || 0); // Actualizar el estado de la entrega
-                } else {
-                    console.error("Error al recuperar el estado de la entrega");
-                }
-
-                // Recuperar la calificación
-                const calificacionRes = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/calificacion`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
-
-                if (calificacionRes.status === 200) {
-                    const calificacionData = await calificacionRes.json();
-                    setCalificacion(calificacionData.calificacion); // Actualizar la calificación
-
-                    // Actualizar el estatus basado en la calificación y el estado de entrega
-                    if (estadoData?.entrega?.entregada === 1) {
-                        setEstatus(
-                            calificacionData.calificacion === null
-                                ? "Entregada"
-                                : `${calificacionData.calificacion}/100`
-                        );
-                    } else {
-                        setEstatus("No entregada");
-                    }
-                } else {
-                    console.error("Error al recuperar la calificación");
-                }
-            } catch (error) {
-                console.error("Error al recuperar el estado o la calificación:", error);
-            }
-        };
-
         fetchEstadoYCalificacion();
-    }, [claseId, tareaId]);
-
-    // Recuperar archivos de la entrega
-    useEffect(() => {
-        const fetchArchivosEntrega = async () => {
-            try {
-                const res = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/entregas`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
-
-                if (res.status === 200) {
-                    const data = await res.json();
-                    setArchivos(data.archivos || []);
-                } else {
-                    console.error("Error al recuperar los archivos de la entrega");
-                }
-            } catch (error) {
-                console.error("Error al recuperar los archivos de la entrega:", error);
-            }
-        };
-
         fetchArchivosEntrega();
     }, [claseId, tareaId]);
 
     // Subir archivos al servidor
     const handleArchivoSeleccionado = async (e) => {
         const nuevosArchivos = Array.from(e.target.files);
-    
+
         // Filtrar archivos que ya existen en el estado
         const archivosFiltrados = nuevosArchivos.filter(
             (nuevoArchivo) =>
                 !archivos.some((archivoExistente) => archivoExistente.nombre_original === nuevoArchivo.name)
         );
-    
+
         if (archivosFiltrados.length === 0) {
             console.log("Todos los archivos seleccionados ya existen.");
             return;
         }
-    
+
         setArchivos((prevArchivos) => [...prevArchivos, ...archivosFiltrados]);
-    
+
         try {
             const formData = new FormData();
             archivosFiltrados.forEach((archivo) => {
                 formData.append("archivos[]", archivo);
             });
-    
+
             const res = await fetch(`http://127.0.0.1:8000/api/alumno/clases/${claseId}/tareas/${tareaId}/subir-archivos`, {
                 method: "POST",
                 headers: {
@@ -115,7 +111,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
                 },
                 body: formData,
             });
-    
+
             if (res.ok) { // Manejar cualquier código de estado exitoso (200-299)
                 console.log("Archivos subidos exitosamente");
             } else {
@@ -182,7 +178,8 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
         <div className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="me-3">Tu trabajo</h5>
-                <span className={`badge ${estatus === "Entregada" || estatus.includes("/100") ? "bg-success" : "bg-secondary"}`}>
+                <span
+                    className={`badge ${estatus === "Entregada" || estatus.includes("/100") ? "bg-success" : "bg-secondary"}`}>
                     {estatus}
                 </span>
             </div>
@@ -190,7 +187,8 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
             {archivos.length > 0 && (
                 <ul className="list-group mb-3">
                     {archivos.map((archivo) => (
-                        <li key={archivo.id || archivo.name} className="list-group-item d-flex justify-content-between align-items-center">
+                        <li key={archivo.id || archivo.name}
+                            className="list-group-item d-flex justify-content-between align-items-center">
                             {archivo.nombre_original || archivo.name}
                             {archivo.id && entregada === 0 && ( // Mostrar botón de eliminar solo si no está entregada
                                 <button
@@ -206,19 +204,12 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
             )}
 
             <div className="mb-3 d-flex justify-content-center">
-                <label
-                    htmlFor="archivoInput"
-                    className={`btn px-4 ${entregada === 1 ? "btn-secondary" : "btn-primary"}`}
-                    style={{ whiteSpace: "nowrap", cursor: entregada === 1 ? "not-allowed" : "pointer" }}
+                <label htmlFor="archivoInput" className={`btn px-4 ${entregada === 1 ? "btn-secondary" : "btn-primary"}`}
+                    style={{whiteSpace: "nowrap", cursor: entregada === 1 ? "not-allowed" : "pointer"}}
                 >
                     Añadir archivos
                 </label>
-                <input
-                    id="archivoInput"
-                    type="file"
-                    multiple
-                    className="d-none"
-                    onChange={handleArchivoSeleccionado}
+                <input id="archivoInput" type="file" multiple className="d-none" onChange={handleArchivoSeleccionado}
                     disabled={entregada === 1} // Deshabilitar si la tarea está entregada
                 />
             </div>
@@ -226,7 +217,7 @@ export default function TrabajoAlumno({ tareaId, claseId, estatusInicial, onTare
             <div className="d-flex justify-content-center">
                 <button
                     className={`btn ${entregada ? "btn-danger" : "btn-success"} px-4`}
-                    style={{ whiteSpace: "nowrap" }}
+                    style={{whiteSpace: "nowrap"}}
                     onClick={handleToggleEntrega}
                     disabled={archivos.length === 0 && !entregada}
                 >
